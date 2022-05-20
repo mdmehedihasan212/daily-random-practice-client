@@ -124,7 +124,7 @@ const SignUp = () => {
                         </div>
 
                         <input className='btn w-full max-w-xs uppercase' value='Sign Up' type="submit" />
-                        <p className='mt-2 text-center'>Already have an account? <Link to='/login'>Please Login</Link></p>
+                        <p className='mt-2 text-center'>Already have an account? <Link to='/login' className='text-purple-500'>Please Login</Link></p>
                         <div className="divider my-6">OR</div>
 
                         <button
