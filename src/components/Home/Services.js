@@ -3,18 +3,20 @@ import React, { useEffect, useState } from 'react';
 import ServiceCard from './ServiceCard';
 
 const Services = () => {
-    const [services, setServices] = useState([]);
+    const [products, setProducts] = useState([]);
     const [pageCount, setPageCount] = useState(0);
+    const [page, setPage] = useState(0);
+    const [size, setSize] = useState(10);
 
     useEffect(() => {
-        axios.get('http://localhost:5000/products')
+        axios.get(`http://localhost:5000/products?page=${page}&size=${size}`)
             .then(res => {
-                setServices(res.data);
+                setProducts(res.data);
             })
             .catch(error => {
                 console.log(error);
             })
-    }, [])
+    }, [page, size])
 
 
     useEffect(() => {
@@ -29,23 +31,29 @@ const Services = () => {
 
     return (
         <div className='px-12'>
-            <h1 className="text-3xl mt-12 font-bold text-center">Services: {services.length}</h1>
+            <h1 className="text-3xl mt-12 font-bold text-center">Services: {products?.length}</h1>
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12'>
                 {
-                    services.map(service => <ServiceCard
+                    products.map(service => <ServiceCard
                         key={service._id}
                         service={service}
                     ></ServiceCard>)
                 }
-                <div class="btn-group justify-center mt-12">
-                    {
-                        [...Array(pageCount).keys()].map(count => <button class="btn mx-1">{count}</button>)
-                    }
-
-                    {/* <button class="btn btn-active">2</button>
-                    <button class="btn">3</button>
-                    <button class="btn">4</button> */}
-                </div>
+            </div>
+            <div class="flex justify-center mx-auto my-12">
+                {
+                    [...Array(pageCount).keys()].map(count => <button
+                        className={page === count ? 'btn btn-active' : 'btn'}
+                        onClick={() => setPage(count)}
+                        class="btn mx-1">{count + 1}</button>)
+                }
+                <button className='btn'>{size}</button>
+                <select onChange={e => setSize(e.target.value)} class="select select-bordered max-w-xs mx-1">
+                    <option selected value='10'>10</option>
+                    <option value='30'>30</option>
+                    <option value='50'>50</option>
+                    <option value='50'>80</option>
+                </select>
             </div>
         </div>
     );
