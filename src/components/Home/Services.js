@@ -1,15 +1,23 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import auth from '../../firebase.init';
 import ServiceCard from './ServiceCard';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import Loading from '../Shared/Loading';
 
 const Services = () => {
     const [products, setProducts] = useState([]);
     const [pageCount, setPageCount] = useState(0);
     const [page, setPage] = useState(0);
     const [size, setSize] = useState(10);
+    const [user, loading, error] = useAuthState(auth);
 
     useEffect(() => {
-        axios.get(`http://localhost:5000/products?page=${page}&size=${size}`)
+        axios.get(`http://localhost:5000/products?page=${page}&size=${size}`, {
+            headers: {
+                authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        })
             .then(res => {
                 setProducts(res.data);
             })
@@ -18,9 +26,12 @@ const Services = () => {
             })
     }, [page, size])
 
-
     useEffect(() => {
-        fetch('http://localhost:5000/productCount')
+        fetch('http://localhost:5000/productCount', {
+            headers: {
+                authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        })
             .then(res => res.json())
             .then(data => {
                 const count = data.products;
@@ -28,6 +39,10 @@ const Services = () => {
                 setPageCount(page);
             })
     }, [])
+
+    if (loading) {
+        return <Loading></Loading>
+    }
 
     return (
         <div className='px-12'>

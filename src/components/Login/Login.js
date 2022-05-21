@@ -4,6 +4,7 @@ import auth from '../../firebase.init';
 import { useSignInWithEmailAndPassword, useSignInWithGoogle } from 'react-firebase-hooks/auth';
 import { Link, useNavigate } from 'react-router-dom';
 import Loading from '../Shared/Loading';
+import axios from 'axios';
 
 const Login = () => {
     const { register, formState: { errors }, handleSubmit } = useForm();
@@ -22,7 +23,7 @@ const Login = () => {
     useEffect(() => {
         if (gUser || user) {
             console.log(gUser || user);
-            navigate('/')
+
         }
     }, [gUser, user, navigate])
 
@@ -34,10 +35,29 @@ const Login = () => {
         errorMessage = <p><small>{gError?.message || error?.message}</small></p>
     }
 
-    const onSubmit = data => {
+    const onSubmit = (data) => {
         console.log(data)
         signInWithEmailAndPassword(data.email, data.password)
 
+        // jwt post for create login user token
+        fetch('http://localhost:5000/jwt-token', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: data.email
+            })
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                localStorage.setItem('token', data.jwtToken)
+                navigate('/')
+            })
+            .catch(error => {
+                console.error(error);
+            })
     };
 
     return (
