@@ -4,7 +4,6 @@ import auth from '../../firebase.init';
 import { useSignInWithEmailAndPassword, useSignInWithGoogle } from 'react-firebase-hooks/auth';
 import { Link, useNavigate } from 'react-router-dom';
 import Loading from '../Shared/Loading';
-import axios from 'axios';
 
 const Login = () => {
     const { register, formState: { errors }, handleSubmit } = useForm();
@@ -46,7 +45,7 @@ const Login = () => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                email: data.email
+
             })
         })
             .then(res => res.json())
